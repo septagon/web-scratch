@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+    <title>Babylon - Getting Started</title>
+    <!--- Link to the last version of BabylonJS --->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <style>
+        html, body {
+            overflow: hidden;
+            width   : 100%;
+            height  : 100%;
+            margin  : 0;
+            padding : 0;
+        }
+
+        #renderCanvas {
+            width   : 100%;
+            height  : 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        window.addEventListener('DOMContentLoaded', function(){
+            // get the canvas DOM element
+            var canvas = document.getElementById('renderCanvas');
+
+            // load the 3D engine
+            var engine = new BABYLON.Engine(canvas, true);
+
+            // createScene function that creates and return the scene
+            var createScene = function(){
+                var scene = new BABYLON.Scene(engine);
+                scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+
+                var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1, -3), scene);
+                camera.setTarget(BABYLON.Vector3.Zero());
+                var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                light.intensity = 0.7;
+
+                // var texture = new BABYLON.Texture("textures/co.png", scene);
+                
+                var cube = BABYLON.MeshBuilder.CreateBox("box", {size:1}, scene);
+                scene.onBeforeRenderObservable.add(() => {
+                    const r = scene.getAnimationRatio();
+                    cube.rotation.x -= 0.005 * r;
+                    cube.rotation.y -= 0.01 * r;
+                    cube.rotation.z -= 0.007 * r;
+                });
+
+                var mat = new BABYLON.PBRMaterial("mat", scene);
+                mat.albedoTexture = new BABYLON.Texture("kkf.png", scene);
+                cube.material = mat;
+                return scene;
+            }
+
+            // call the createScene function
+            var scene = createScene();
+
+            // run the render loop
+            engine.runRenderLoop(function(){
+                scene.render();
+            });
+
+            // the canvas/window resize event handler
+            window.addEventListener('resize', function(){
+                engine.resize();
+            });
+        });
+    </script>
+</body>
+</html>
