@@ -52,9 +52,9 @@
                 });
 
                 var mat = new BABYLON.PBRMaterial("mat", scene);
-                mat.albedoTexture = new BABYLON.Texture("kkf.png", scene);
+                mat.albedoTexture = new BABYLON.Texture("./kkf.png", scene);
+                mat.unlit = true;
                 cube.material = mat;
-                return scene;
             }
 
             // call the createScene function
