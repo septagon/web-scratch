@@ -88,7 +88,7 @@
                 const TV_POSITION_OFFCENTER = new BABYLON.Vector3(2.5, 1.3, 5);
                 const TV_ROTATION_OFFCENTER = new BABYLON.Vector3(0, Math.PI / 6, Math.PI / 12);
 
-                const VERTICAL_SPIN_PADDING = 0 * Math.PI;
+                const VERTICAL_SPIN_PADDING = 2 * Math.PI;
                 const HORIZONTAL_SPIN_PADING = 2 * Math.PI;
 
                 const TV_POSITION_TOP_LEFT = new BABYLON.Vector3(
@@ -350,11 +350,106 @@
                 }).then(stream => {
                     BABYLON.VideoTexture.CreateFromStreamAsync(scene, stream).then(texture => {
                         videoTextureMat.albedoTexture = texture;
-
-                        var anims = animsTR2C;
-                        scene.beginDirectAnimation(tvRoot, anims, 0, anims[0].getHighestFrame(), false);
                     });
                 });
+                
+                const playAnimation = function(anims) {
+                    scene.beginDirectAnimation(tvRoot, anims, 0, anims[0].getHighestFrame(), false);
+                };
+                window.playAnimation = function(from, to) {
+                    switch (from) {
+                        case "center":
+                            switch (to) {
+                                case "center":
+                                    break;
+                                case "topLeft":
+                                    playAnimation(animsC2TL);
+                                    break;
+                                case "topRight":
+                                    playAnimation(animsC2TR);
+                                    break;
+                                case "bottomLeft":
+                                    playAnimation(animsC2BL);
+                                    break;
+                                case "bottomRight":
+                                    playAnimation(animsC2BR);
+                                    break;
+                            }
+                            break;
+                        case "topLeft":
+                            switch (to) {
+                                case "center":
+                                    playAnimation(animsTL2C);
+                                    break;
+                                case "topLeft":
+                                    break;
+                                case "topRight":
+                                    playAnimation(animsTL2TR);
+                                    break;
+                                case "bottomLeft":
+                                    playAnimation(animsTL2BL);
+                                    break;
+                                case "bottomRight":
+                                    playAnimation(animsTL2BR);
+                                    break;
+                            }
+                            break;
+                        case "topRight":
+                            switch (to) {
+                                case "center":
+                                    playAnimation(animsTR2C);
+                                    break;
+                                case "topLeft":
+                                    playAnimation(animsTR2TL);
+                                    break;
+                                case "topRight":
+                                    break;
+                                case "bottomLeft":
+                                    playAnimation(animsTR2BL);
+                                    break;
+                                case "bottomRight":
+                                    playAnimation(animsTR2BR);
+                                    break;
+                            }
+                            break;
+                        case "bottomLeft":
+                            switch (to) {
+                                case "center":
+                                    playAnimation(animsBL2C);
+                                    break;
+                                case "topLeft":
+                                    playAnimation(animsBL2TL);
+                                    break;
+                                case "topRight":
+                                    playAnimation(animsBL2TR);
+                                    break;
+                                case "bottomLeft":
+                                    break;
+                                case "bottomRight":
+                                    playAnimation(animsBL2BR);
+                                    break;
+                            }
+                            break;
+                        case "bottomRight":
+                            switch (to) {
+                                case "center":
+                                    playAnimation(animsBR2C);
+                                    break;
+                                case "topLeft":
+                                    playAnimation(animsBR2TL);
+                                    break;
+                                case "topRight":
+                                    playAnimation(animsBR2TR);
+                                    break;
+                                case "bottomLeft":
+                                    playAnimation(animsBR2BL);
+                                    break;
+                                case "bottomRight":
+                                    break;
+                            }
+                            break;
+                    }
+                };
 
                 // scene.debugLayer.show();
 
