@@ -32,6 +32,46 @@
             // load the 3D engine
             var engine = new BABYLON.Engine(canvas, true);
 
+            var getXSlide = function (animationSpeed) {
+                const frameRate = 1.0 / animationSpeed;
+                var xSlide = new BABYLON.Animation("xSlide", "position.x", 1, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+                var keyFrames = [];
+                keyFrames.push({
+                    frame: 0,
+                    value: 2
+                });
+                keyFrames.push({
+                    frame: frameRate,
+                    value: -2
+                });
+                keyFrames.push({
+                    frame: 2 * frameRate,
+                    value: 2
+                });
+                xSlide.setKeys(keyFrames);
+                return xSlide;
+            };
+
+            var getYSpin = function (animationSpeed) {
+                const frameRate = 1.0 / animationSpeed;
+                var ySpin = new BABYLON.Animation("ySpin", "rotation", 1, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+                var keyFrames = [];
+                keyFrames.push({
+                    frame: 0,
+                    value: BABYLON.Vector3.Zero()
+                });
+                keyFrames.push({
+                    frame: frameRate,
+                    value: new BABYLON.Vector3(-Math.PI, Math.PI, Math.PI)
+                });
+                keyFrames.push({
+                    frame: 2 * frameRate,
+                    value: new BABYLON.Vector3(Math.PI, Math.PI, -Math.PI)
+                });
+                ySpin.setKeys(keyFrames);
+                return ySpin;
+            };
+
             // createScene function that creates and return the scene
             var createScene = function(){
                 var scene = new BABYLON.Scene(engine);
@@ -92,8 +132,199 @@
                     -TV_ROTATION_OFFCENTER.z
                 );
 
+                var createFromToAnimations = function (name, animationSpeed, fromPosition, fromRotation, toPosition, toRotation) {
+                    const frameRate = 1.0 / animationSpeed;
+                    var position = new BABYLON.Animation(name + "_position", "position", 1, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+                    var positionKeyFrames = [];
+                    positionKeyFrames.push({
+                        frame: 0,
+                        value: fromPosition
+                    });
+                    positionKeyFrames.push({
+                        frame: frameRate,
+                        value: toPosition
+                    });
+                    position.setKeys(positionKeyFrames);
+
+                    var rotation = new BABYLON.Animation(name + "_rotation", "rotation", 1, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+                    var rotationKeyFrames = [];
+                    rotationKeyFrames.push({
+                        frame: 0,
+                        value: fromRotation
+                    });
+                    rotationKeyFrames.push({
+                        frame: frameRate,
+                        value: toRotation
+                    });
+                    rotation.setKeys(rotationKeyFrames);
+                    return [position, rotation];
+                };
+
+                const ANIMATION_SPEED = 1;
+                const animsC2TL = createFromToAnimations(
+                    "centerToTopLeft", 
+                    ANIMATION_SPEED, 
+                    TV_POSITION_CENTER, 
+                    TV_ROTATION_CENTER, 
+                    TV_POSITION_TOP_LEFT, 
+                    TV_ROTATION_TOP_LEFT
+                );
+                const animsC2TR = createFromToAnimations(
+                    "centerToTopRight", 
+                    ANIMATION_SPEED, 
+                    TV_POSITION_CENTER, 
+                    TV_ROTATION_CENTER, 
+                    TV_POSITION_TOP_RIGHT, 
+                    TV_ROTATION_TOP_RIGHT
+                );
+                const animsC2BL = createFromToAnimations(
+                    "centerToBottomLeft", 
+                    ANIMATION_SPEED, 
+                    TV_POSITION_CENTER, 
+                    TV_ROTATION_CENTER, 
+                    TV_POSITION_BOTTOM_LEFT, 
+                    TV_ROTATION_BOTTOM_LEFT
+                );
+                const animsC2BR = createFromToAnimations(
+                    "centerToBottomRight", 
+                    ANIMATION_SPEED, 
+                    TV_POSITION_CENTER, 
+                    TV_ROTATION_CENTER, 
+                    TV_POSITION_BOTTOM_RIGHT, 
+                    TV_ROTATION_BOTTOM_RIGHT
+                );
+                const animsTL2C = createFromToAnimations(
+                    "topLeftToCenter",
+                    ANIMATION_SPEED,
+                    TV_POSITION_TOP_LEFT,
+                    TV_ROTATION_TOP_LEFT,
+                    TV_POSITION_CENTER,
+                    TV_ROTATION_CENTER
+                );
+                const animsTL2TR = createFromToAnimations(
+                    "topLeftToTopRight",
+                    ANIMATION_SPEED,
+                    TV_POSITION_TOP_LEFT,
+                    TV_ROTATION_TOP_LEFT,
+                    TV_POSITION_TOP_RIGHT,
+                    TV_ROTATION_TOP_RIGHT
+                );
+                const animsTL2BL = createFromToAnimations(
+                    "topLeftToBottomLeft",
+                    ANIMATION_SPEED,
+                    TV_POSITION_TOP_LEFT,
+                    TV_ROTATION_TOP_LEFT,
+                    TV_POSITION_BOTTOM_LEFT,
+                    TV_ROTATION_BOTTOM_LEFT
+                );
+                const animsTL2BR = createFromToAnimations(
+                    "topLeftToBottomRight",
+                    ANIMATION_SPEED,
+                    TV_POSITION_TOP_LEFT,
+                    TV_ROTATION_TOP_LEFT,
+                    TV_POSITION_BOTTOM_RIGHT,
+                    TV_ROTATION_BOTTOM_RIGHT
+                );
+                const animsTR2C = createFromToAnimations(
+                    "topRightToCenter",
+                    ANIMATION_SPEED,
+                    TV_POSITION_TOP_RIGHT,
+                    TV_ROTATION_TOP_RIGHT,
+                    TV_POSITION_CENTER,
+                    TV_ROTATION_CENTER
+                );
+                const animsTR2TL = createFromToAnimations(
+                    "topRightToTopLeft",
+                    ANIMATION_SPEED,
+                    TV_POSITION_TOP_RIGHT,
+                    TV_ROTATION_TOP_RIGHT,
+                    TV_POSITION_TOP_LEFT,
+                    TV_ROTATION_TOP_LEFT
+                );
+                const animsTR2BL = createFromToAnimations(
+                    "topRightToBottomLeft",
+                    ANIMATION_SPEED,
+                    TV_POSITION_TOP_RIGHT,
+                    TV_ROTATION_TOP_RIGHT,
+                    TV_POSITION_BOTTOM_LEFT,
+                    TV_ROTATION_BOTTOM_LEFT
+                );
+                const animsTR2BR = createFromToAnimations(
+                    "topRightToBottomRight",
+                    ANIMATION_SPEED,
+                    TV_POSITION_TOP_RIGHT,
+                    TV_ROTATION_TOP_RIGHT,
+                    TV_POSITION_BOTTOM_RIGHT,
+                    TV_ROTATION_BOTTOM_RIGHT
+                );
+                const animsBL2C = createFromToAnimations(
+                    "bottomLeftToCenter",
+                    ANIMATION_SPEED,
+                    TV_POSITION_BOTTOM_LEFT,
+                    TV_ROTATION_BOTTOM_LEFT,
+                    TV_POSITION_CENTER,
+                    TV_ROTATION_CENTER
+                );
+                const animsBL2TL = createFromToAnimations(
+                    "bottomLeftToTopLeft",
+                    ANIMATION_SPEED,
+                    TV_POSITION_BOTTOM_LEFT,
+                    TV_ROTATION_BOTTOM_LEFT,
+                    TV_POSITION_TOP_LEFT,
+                    TV_ROTATION_TOP_LEFT
+                );
+                const animsBL2TR = createFromToAnimations(
+                    "bottomLeftToTopRight",
+                    ANIMATION_SPEED,
+                    TV_POSITION_BOTTOM_LEFT,
+                    TV_ROTATION_BOTTOM_LEFT,
+                    TV_POSITION_TOP_RIGHT,
+                    TV_ROTATION_TOP_RIGHT
+                );
+                const animsBL2BR = createFromToAnimations(
+                    "bottomLeftToBottomRight",
+                    ANIMATION_SPEED,
+                    TV_POSITION_BOTTOM_LEFT,
+                    TV_ROTATION_BOTTOM_LEFT,
+                    TV_POSITION_BOTTOM_RIGHT,
+                    TV_ROTATION_BOTTOM_RIGHT
+                );
+                const animsBR2C = createFromToAnimations(
+                    "bottomRightToCenter",
+                    ANIMATION_SPEED,
+                    TV_POSITION_BOTTOM_RIGHT,
+                    TV_ROTATION_BOTTOM_RIGHT,
+                    TV_POSITION_CENTER,
+                    TV_ROTATION_CENTER
+                );
+                const animsBR2TL = createFromToAnimations(
+                    "bottomRightToTopLeft",
+                    ANIMATION_SPEED,
+                    TV_POSITION_BOTTOM_RIGHT,
+                    TV_ROTATION_BOTTOM_RIGHT,
+                    TV_POSITION_TOP_LEFT,
+                    TV_ROTATION_TOP_LEFT
+                );
+                const animsBR2TR = createFromToAnimations(
+                    "bottomRightToTopRight",
+                    ANIMATION_SPEED,
+                    TV_POSITION_BOTTOM_RIGHT,
+                    TV_ROTATION_BOTTOM_RIGHT,
+                    TV_POSITION_TOP_RIGHT,
+                    TV_ROTATION_TOP_RIGHT
+                );
+                const animsBR2BL = createFromToAnimations(
+                    "bottomRightToBottomLeft",
+                    ANIMATION_SPEED,
+                    TV_POSITION_BOTTOM_RIGHT,
+                    TV_ROTATION_BOTTOM_RIGHT,
+                    TV_POSITION_BOTTOM_LEFT,
+                    TV_ROTATION_BOTTOM_LEFT
+                );
+
                 var tvRoot;
                 var tvPlane;
+                var videoTextureMat;
                 BABYLON.SceneLoader.AppendAsync("https://septagon.github.io/web-scratch/assets/3d/pbr_retro_tv/scene.gltf").then(() => {
                     tvRoot = scene.getNodeByName("__root__");
                     tvRoot.name = "tvRoot";
@@ -108,17 +339,17 @@
                     tvRoot.rotation = new BABYLON.Vector3();
                     tvRoot.rotation.copyFrom(TV_ROTATION_CENTER);
                     tvRoot.scaling.copyFrom(TV_SCALING_CENTER);
-
-                    var videoTextureMat = new BABYLON.PBRMaterial("videoTextureMat", scene);
+                }).then(() => {
+                    videoTextureMat = new BABYLON.PBRMaterial("videoTextureMat", scene);
                     videoTextureMat.unlit = true;
                     tvPlane.material = videoTextureMat;
-                    navigator.mediaDevices.getUserMedia({ video: { /*deviceId:  { exact: "" }*/ } }).then(stream => {
-                        BABYLON.VideoTexture.CreateFromStreamAsync(scene, stream).then(texture => {
-                            videoTextureMat.albedoTexture = texture;
+                    return navigator.mediaDevices.getUserMedia({ video: { /*deviceId:  { exact: "" }*/ } });
+                }).then(stream => {
+                    BABYLON.VideoTexture.CreateFromStreamAsync(scene, stream).then(texture => {
+                        videoTextureMat.albedoTexture = texture;
 
-                            tvRoot.position.copyFrom(TV_POSITION_TOP_RIGHT);
-                            tvRoot.rotation.copyFrom(TV_ROTATION_TOP_RIGHT);
-                        });
+                        var anims = animsBR2TL;
+                        scene.beginDirectAnimation(tvRoot, anims, 0, anims[0].getHighestFrame(), false);
                     });
                 });
 
