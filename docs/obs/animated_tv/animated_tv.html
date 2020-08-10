@@ -455,7 +455,7 @@
                 };
 
                 var socket = new WebSocket("ws://127.0.0.1:7603");
-                socket.onmessage = message(event => {
+                socket.onmessage = event => {
                     var words = event.data.split(' ');
                     switch (words[0]) {
                         case "moveTv":
@@ -471,7 +471,7 @@
                             }
                             break;
                     }
-                });
+                };
 
                 // scene.debugLayer.show();
 
