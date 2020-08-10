@@ -328,6 +328,7 @@
                 var tvRoot;
                 var tvPlane;
                 var videoTextureMat;
+                var tvPosition = "center";
                 BABYLON.SceneLoader.AppendAsync("https://septagon.github.io/web-scratch/assets/3d/pbr_retro_tv/scene.gltf").then(() => {
                     tvRoot = scene.getNodeByName("__root__");
                     tvRoot.name = "tvRoot";
@@ -351,12 +352,14 @@
                     BABYLON.VideoTexture.CreateFromStreamAsync(scene, stream).then(texture => {
                         videoTextureMat.albedoTexture = texture;
                     });
+
+                    // TODO: Add mechanism for switching between cameras.
                 });
                 
                 const playAnimation = function(anims) {
                     scene.beginDirectAnimation(tvRoot, anims, 0, anims[0].getHighestFrame(), false);
                 };
-                window.playAnimation = function(from, to) {
+                const animateTv = function(from, to) {
                     switch (from) {
                         case "center":
                             switch (to) {
@@ -450,6 +453,25 @@
                             break;
                     }
                 };
+
+                var socket = new WebSocket("ws://127.0.0.1:7603");
+                socket.onmessage = message(event => {
+                    var words = event.data.split(' ');
+                    switch (words[0]) {
+                        case "moveTv":
+                            switch (words[1]) {
+                                case "center":
+                                case "topLeft":
+                                case "topRight":
+                                case "bottomLeft":
+                                case "bottomRight":
+                                    animateTv(tvPosition, words[1]);
+                                    tvPosition = words[1];
+                                    break;
+                            }
+                            break;
+                    }
+                });
 
                 // scene.debugLayer.show();
 
