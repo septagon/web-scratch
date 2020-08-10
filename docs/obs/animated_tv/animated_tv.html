@@ -88,16 +88,8 @@
                 const TV_POSITION_OFFCENTER = new BABYLON.Vector3(2.5, 1.3, 5);
                 const TV_ROTATION_OFFCENTER = new BABYLON.Vector3(0, Math.PI / 6, Math.PI / 12);
 
-                const TV_POSITION_TOP_RIGHT = new BABYLON.Vector3(
-                    TV_POSITION_OFFCENTER.x,
-                    TV_POSITION_OFFCENTER.y,
-                    TV_POSITION_OFFCENTER.z
-                );
-                const TV_ROTATION_TOP_RIGHT = new BABYLON.Vector3(
-                    TV_ROTATION_OFFCENTER.x,
-                    TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2,
-                    TV_ROTATION_OFFCENTER.z
-                );
+                const VERTICAL_SPIN_PADDING = 0 * Math.PI;
+                const HORIZONTAL_SPIN_PADING = 2 * Math.PI;
 
                 const TV_POSITION_TOP_LEFT = new BABYLON.Vector3(
                     -TV_POSITION_OFFCENTER.x,
@@ -106,19 +98,19 @@
                 );
                 const TV_ROTATION_TOP_LEFT = new BABYLON.Vector3(
                     TV_ROTATION_OFFCENTER.x,
-                    -TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2,
-                    TV_ROTATION_OFFCENTER.z
+                    -TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2 + HORIZONTAL_SPIN_PADING,
+                    TV_ROTATION_OFFCENTER.z + VERTICAL_SPIN_PADDING
                 );
 
-                const TV_POSITION_BOTTOM_RIGHT = new BABYLON.Vector3(
+                const TV_POSITION_TOP_RIGHT = new BABYLON.Vector3(
                     TV_POSITION_OFFCENTER.x,
-                    -TV_POSITION_OFFCENTER.y,
+                    TV_POSITION_OFFCENTER.y,
                     TV_POSITION_OFFCENTER.z
                 );
-                const TV_ROTATION_BOTTOM_RIGHT = new BABYLON.Vector3(
+                const TV_ROTATION_TOP_RIGHT = new BABYLON.Vector3(
                     TV_ROTATION_OFFCENTER.x,
-                    TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2,
-                    -TV_ROTATION_OFFCENTER.z
+                    TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2 - HORIZONTAL_SPIN_PADING,
+                    TV_ROTATION_OFFCENTER.z + VERTICAL_SPIN_PADDING
                 );
 
                 const TV_POSITION_BOTTOM_LEFT = new BABYLON.Vector3(
@@ -128,8 +120,19 @@
                 );
                 const TV_ROTATION_BOTTOM_LEFT = new BABYLON.Vector3(
                     TV_ROTATION_OFFCENTER.x,
-                    -TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2,
-                    -TV_ROTATION_OFFCENTER.z
+                    -TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2 + HORIZONTAL_SPIN_PADING,
+                    -TV_ROTATION_OFFCENTER.z - VERTICAL_SPIN_PADDING
+                );
+
+                const TV_POSITION_BOTTOM_RIGHT = new BABYLON.Vector3(
+                    TV_POSITION_OFFCENTER.x,
+                    -TV_POSITION_OFFCENTER.y,
+                    TV_POSITION_OFFCENTER.z
+                );
+                const TV_ROTATION_BOTTOM_RIGHT = new BABYLON.Vector3(
+                    TV_ROTATION_OFFCENTER.x,
+                    TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2 - HORIZONTAL_SPIN_PADING,
+                    -TV_ROTATION_OFFCENTER.z - VERTICAL_SPIN_PADDING
                 );
 
                 var createFromToAnimations = function (name, animationSpeed, fromPosition, fromRotation, toPosition, toRotation) {
@@ -348,7 +351,7 @@
                     BABYLON.VideoTexture.CreateFromStreamAsync(scene, stream).then(texture => {
                         videoTextureMat.albedoTexture = texture;
 
-                        var anims = animsBR2TL;
+                        var anims = animsTR2C;
                         scene.beginDirectAnimation(tvRoot, anims, 0, anims[0].getHighestFrame(), false);
                     });
                 });
