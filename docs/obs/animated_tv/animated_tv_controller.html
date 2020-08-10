@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h1>Animated TV Overlay Controller</h1>
+
+    <p>Use the buttons below to control the behavior of the Animated TV overlay. Make sure you have your local WebSocket relay running before loading this page!</p>
+
+    <table style="margin-left:auto;margin-right:auto">
+        <tr>
+            <td><button style="font-size:40px;width:200px;height:120px" onclick="send('moveTv topLeft')">Top Left</button></td>
+            <td></td>
+            <td><button style="font-size:40px;width:200px;height:120px" onclick="send('moveTv topRight')">Top Right</button></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button style="font-size:40px;width:200px;height:120px" onclick="send('moveTv center')">Center</button></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><button style="font-size:40px;width:200px;height:120px" onclick="send('moveTv bottomLeft')">Bottom Left</button></td>
+            <td></td>
+            <td><button style="font-size:40px;width:200px;height:120px" onclick="send('moveTv bottomRight')">Bottom Right</button></td>
+        </tr>
+    </table>
+
+    <script>
+        const socket = new WebSocket("ws://127.0.0.1:7602");
+
+        var send = function (message) {
+            socket.send(message);
+        }
+    </script>
+
+</body>
+
+</html>
