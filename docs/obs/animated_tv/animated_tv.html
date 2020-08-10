@@ -329,6 +329,8 @@
                 var tvPlane;
                 var videoTextureMat;
                 var tvPosition = "center";
+                var cameraDeviceIds = [];
+                var cameraDeviceIdIdx = 0;
                 BABYLON.SceneLoader.AppendAsync("https://septagon.github.io/web-scratch/assets/3d/pbr_retro_tv/scene.gltf").then(() => {
                     tvRoot = scene.getNodeByName("__root__");
                     tvRoot.name = "tvRoot";
@@ -357,9 +359,11 @@
                         return navigator.mediaDevices.enumerateDevices({ video: true });
                     }).then(devices => {
                         for (var idx = 0; idx < devices.length; ++idx) {
-                            console.log(devices[idx]);
+                            if (devices[idx].kind === "videoinput") {
+                                cameraDeviceIds.push(devices[idx].deviceId);
+                            }
                         }
-                        window.devices = devices;
+                        console.log(cameraDeviceIds);
                     });
                 });
                 
@@ -461,6 +465,19 @@
                     }
                 };
 
+                const switchCamera = () => {
+                    videoTextureMat.albedoTexture.dispose();
+                    videoTextureMat.albedoTexture = null;
+
+                    cameraDeviceIdIdx += 1;
+                    if (cameraDeviceIdIdx >= cameraDeviceIds.length) {
+                        cameraDeviceIdIdx = 0;
+                    }
+                    BABYLON.VideoTexture.CreateFromWebCamAsync(scene, { deviceId: cameraDeviceId[cameraDeviceIdIdx] }).then(texture => {
+                        videoTextureMat.albedoTexture = texture;
+                    });
+                };
+
                 var socket = new WebSocket("ws://127.0.0.1:7603");
                 socket.onmessage = event => {
                     var words = event.data.split(' ');
@@ -476,6 +493,9 @@
                                     tvPosition = words[1];
                                     break;
                             }
+                            break;
+                        case "switchCamera":
+                            switchCamera();
                             break;
                     }
                 };
