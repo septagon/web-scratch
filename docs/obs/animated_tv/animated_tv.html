@@ -347,13 +347,20 @@
                     videoTextureMat = new BABYLON.PBRMaterial("videoTextureMat", scene);
                     videoTextureMat.unlit = true;
                     tvPlane.material = videoTextureMat;
-                    return navigator.mediaDevices.getUserMedia({ video: { /*deviceId:  { exact: "" }*/ } });
+                    return navigator.mediaDevices.getUserMedia({ video: true });
                 }).then(stream => {
                     BABYLON.VideoTexture.CreateFromStreamAsync(scene, stream).then(texture => {
                         videoTextureMat.albedoTexture = texture;
                     });
 
-                    // TODO: Add mechanism for switching between cameras.
+                    navigator.mediaDevices.getUserMedia({video: true}).then(() => {
+                        return navigator.mediaDevices.enumerateDevices({ video: true });
+                    }).then(devices => {
+                        for (var idx = 0; idx < devices.length; ++idx) {
+                            console.log(devices[idx]);
+                        }
+                        window.devices = devices;
+                    });
                 });
                 
                 const playAnimation = function(anims) {
