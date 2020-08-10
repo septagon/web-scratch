@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+    <title>KoopaKungFu Cube Logo with Babylon.js</title>
+    <!--- Link to the last version of BabylonJS --->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylon.glTF2FileLoader.js"></script>
+    <style>
+        html, body {
+            overflow: hidden;
+            width   : 960px; /*100%;*/
+            height  : 540px; /*100%;*/
+            margin  : 0;
+            padding : 0;
+        }
+
+        #renderCanvas {
+            width   : 100%;
+            height  : 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        window.addEventListener('DOMContentLoaded', function(){
+            // get the canvas DOM element
+            var canvas = document.getElementById('renderCanvas');
+
+            // load the 3D engine
+            var engine = new BABYLON.Engine(canvas, true);
+
+            // createScene function that creates and return the scene
+            var createScene = function(){
+                var scene = new BABYLON.Scene(engine);
+                //scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+
+                var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 0, 0), scene);
+                camera.attachControl(canvas);
+                scene.createDefaultEnvironment({ createGround: false, createSkybox: false });
+
+                const TV_POSITION_CENTER = new BABYLON.Vector3(0, 0, 2.2);
+                const TV_ROTATION_CENTER = new BABYLON.Vector3(0, 3 * Math.PI / 2, 0);
+                const TV_SCALING_CENTER = new BABYLON.Vector3(1, 1, -1);
+
+                const TV_POSITION_OFFCENTER = new BABYLON.Vector3(2.5, 1.3, 5);
+                const TV_ROTATION_OFFCENTER = new BABYLON.Vector3(0, Math.PI / 6, Math.PI / 12);
+
+                const TV_POSITION_TOP_RIGHT = new BABYLON.Vector3(
+                    TV_POSITION_OFFCENTER.x,
+                    TV_POSITION_OFFCENTER.y,
+                    TV_POSITION_OFFCENTER.z
+                );
+                const TV_ROTATION_TOP_RIGHT = new BABYLON.Vector3(
+                    TV_ROTATION_OFFCENTER.x,
+                    TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2,
+                    TV_ROTATION_OFFCENTER.z
+                );
+
+                const TV_POSITION_TOP_LEFT = new BABYLON.Vector3(
+                    -TV_POSITION_OFFCENTER.x,
+                    TV_POSITION_OFFCENTER.y,
+                    TV_POSITION_OFFCENTER.z
+                );
+                const TV_ROTATION_TOP_LEFT = new BABYLON.Vector3(
+                    TV_ROTATION_OFFCENTER.x,
+                    -TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2,
+                    TV_ROTATION_OFFCENTER.z
+                );
+
+                const TV_POSITION_BOTTOM_RIGHT = new BABYLON.Vector3(
+                    TV_POSITION_OFFCENTER.x,
+                    -TV_POSITION_OFFCENTER.y,
+                    TV_POSITION_OFFCENTER.z
+                );
+                const TV_ROTATION_BOTTOM_RIGHT = new BABYLON.Vector3(
+                    TV_ROTATION_OFFCENTER.x,
+                    TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2,
+                    -TV_ROTATION_OFFCENTER.z
+                );
+
+                const TV_POSITION_BOTTOM_LEFT = new BABYLON.Vector3(
+                    -TV_POSITION_OFFCENTER.x,
+                    -TV_POSITION_OFFCENTER.y,
+                    TV_POSITION_OFFCENTER.z
+                );
+                const TV_ROTATION_BOTTOM_LEFT = new BABYLON.Vector3(
+                    TV_ROTATION_OFFCENTER.x,
+                    -TV_ROTATION_OFFCENTER.y + 3 * Math.PI / 2,
+                    -TV_ROTATION_OFFCENTER.z
+                );
+
+                var tvRoot;
+                var tvPlane;
+                BABYLON.SceneLoader.AppendAsync("https://septagon.github.io/web-scratch/assets/3d/pbr_retro_tv/scene.gltf").then(() => {
+                    tvRoot = scene.getNodeByName("__root__");
+                    tvRoot.name = "tvRoot";
+                    
+                    tvPlane = BABYLON.MeshBuilder.CreatePlane("tvPlane", {}, scene);
+                    tvPlane.parent = tvRoot;
+                    tvPlane.position.copyFromFloats(-0.38, 0, -0.18);
+                    tvPlane.rotation.copyFromFloats(0, Math.PI / 2, Math.PI);
+                    tvPlane.scaling.copyFromFloats(-1.4, 1.2, 1);
+
+                    tvRoot.position.copyFrom(TV_POSITION_CENTER);
+                    tvRoot.rotation = new BABYLON.Vector3();
+                    tvRoot.rotation.copyFrom(TV_ROTATION_CENTER);
+                    tvRoot.scaling.copyFrom(TV_SCALING_CENTER);
+
+                    var videoTextureMat = new BABYLON.PBRMaterial("videoTextureMat", scene);
+                    videoTextureMat.unlit = true;
+                    tvPlane.material = videoTextureMat;
+                    navigator.mediaDevices.getUserMedia({ video: { /*deviceId:  { exact: "" }*/ } }).then(stream => {
+                        BABYLON.VideoTexture.CreateFromStreamAsync(scene, stream).then(texture => {
+                            videoTextureMat.albedoTexture = texture;
+
+                            tvRoot.position.copyFrom(TV_POSITION_TOP_RIGHT);
+                            tvRoot.rotation.copyFrom(TV_ROTATION_TOP_RIGHT);
+                        });
+                    });
+                });
+
+                // scene.debugLayer.show();
+
+                return scene;
+            }
+
+            // call the createScene function
+            var scene = createScene();
+
+            // run the render loop
+            engine.runRenderLoop(function(){
+                scene.render();
+            });
+
+            // the canvas/window resize event handler
+            window.addEventListener('resize', function(){
+                engine.resize();
+            });
+        });
+    </script>
+</body>
+</html>

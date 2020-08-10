@@ -56,23 +56,6 @@
                 mat.unlit = true;
                 cube.material = mat;
 
-                var tvRoot;
-                var tvPlane;
-                BABYLON.SceneLoader.AppendAsync("https://septagon.github.io/web-scratch/assets/3d/pbr_retro_tv/scene.gltf").then(() => {
-                    tvRoot = scene.getNodeByName("__root__");
-                    tvRoot.name = "tvRoot";
-                    
-                    tvPlane = BABYLON.MeshBuilder.CreatePlane("tvPlane", {}, scene);
-                    tvPlane.parent = tvRoot;
-                    tvPlane.position.x = -0.38;
-                    tvPlane.position.z = -0.18;
-                    tvPlane.rotation.y = Math.PI / 2;
-                    tvPlane.scaling.x = 1.4;
-                    tvPlane.scaling.y = 1.2;
-
-                    tvRoot.setEnabled(false);
-                });
-
                 return scene;
             }
 
