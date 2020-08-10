@@ -351,6 +351,7 @@
                     tvPlane.material = videoTextureMat;
                     return navigator.mediaDevices.getUserMedia({ video: true });
                 }).then(stream => {
+                    // TODO: Clean this up.
                     BABYLON.VideoTexture.CreateFromStreamAsync(scene, stream).then(texture => {
                         videoTextureMat.albedoTexture = texture;
                     });
@@ -363,7 +364,6 @@
                                 cameraDeviceIds.push(devices[idx].deviceId);
                             }
                         }
-                        console.log(cameraDeviceIds);
                     });
                 });
                 
@@ -466,8 +466,10 @@
                 };
 
                 const switchCamera = () => {
-                    videoTextureMat.albedoTexture.dispose();
-                    videoTextureMat.albedoTexture = null;
+                    if (videoTextureMat.albedoTexture !== null) {
+                        videoTextureMat.albedoTexture.dispose();
+                        videoTextureMat.albedoTexture = null;
+                    }
 
                     cameraDeviceIdIdx += 1;
                     if (cameraDeviceIdIdx >= cameraDeviceIds.length) {
@@ -499,8 +501,6 @@
                             break;
                     }
                 };
-
-                // scene.debugLayer.show();
 
                 return scene;
             }
