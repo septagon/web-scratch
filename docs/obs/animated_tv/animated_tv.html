@@ -473,7 +473,7 @@
                     if (cameraDeviceIdIdx >= cameraDeviceIds.length) {
                         cameraDeviceIdIdx = 0;
                     }
-                    BABYLON.VideoTexture.CreateFromWebCamAsync(scene, { deviceId: cameraDeviceId[cameraDeviceIdIdx] }).then(texture => {
+                    BABYLON.VideoTexture.CreateFromWebCamAsync(scene, { deviceId: cameraDeviceIds[cameraDeviceIdIdx] }).then(texture => {
                         videoTextureMat.albedoTexture = texture;
                     });
                 };
